@@ -1,14 +1,12 @@
 # Regulatory Compliance Intelligence Agent
 
-[🇻🇳 Tiếng Việt](README_VI.md)
-
-> Transform regulatory documents from static legal text into an actionable compliance intelligence layer: obligations, risks, impacted processes, owners, deadlines, and evidence-backed action plans.
+> Hệ thống chuyển đổi văn bản quy định từ tài liệu pháp lý tĩnh thành lớp trí tuệ tuân thủ có thể hành động được: nghĩa vụ, rủi ro, quy trình bị ảnh hưởng, đơn vị phụ trách, thời hạn và kế hoạch xử lý có dẫn chứng.
 
 ---
 
 ## 1. Product Vision
 
-Instead of building a simple regulatory Q&A chatbot, this system delivers:
+Thay vì chỉ xây một chatbot hỏi đáp quy định, hệ thống sẽ:
 
 ```text
 Regulatory documents
@@ -20,15 +18,15 @@ Regulatory documents
 → Human review
 ```
 
-The system helps organizations quickly answer:
+Mục tiêu cuối cùng là giúp tổ chức hiểu nhanh:
 
 ```text
-What does the new regulation require?
-Which business processes are affected?
-What is the compliance risk level?
-Which departments need to act?
-What actions are needed before the deadline?
-Which article/clause is the evidence?
+Quy định mới yêu cầu gì?
+Ảnh hưởng đến quy trình nào?
+Rủi ro tuân thủ ở mức nào?
+Bộ phận nào cần xử lý?
+Cần hành động gì trước deadline?
+Bằng chứng nằm ở điều/khoản nào?
 ```
 
 ---
@@ -37,7 +35,7 @@ Which article/clause is the evidence?
 
 ### 2.1 Scope
 
-For the hackathon, the goal is an **end-to-end functional MVP** that proves the core workflow:
+Trong phạm vi hackathon, mục tiêu là một **end-to-end functional MVP** chứng minh được workflow cốt lõi:
 
 ```text
 Upload regulation PDF
@@ -124,7 +122,7 @@ Upload regulation PDF
 ```json
 {
   "document_id": "doc_001",
-  "title": "Circular on Customer Due Diligence",
+  "title": "Thông tư về xác minh khách hàng",
   "document_type": "circular",
   "domain": "banking",
   "source": "manual_upload",
@@ -134,10 +132,10 @@ Upload regulation PDF
 
 #### Step 2 — Vietnamese Legal Clause Parsing
 
-The parser supports the Vietnamese legal document hierarchy:
+Parser hỗ trợ cấu trúc văn bản pháp luật Việt Nam:
 
 ```text
-Phần (Part) → Chương (Chapter) → Mục (Section) → Điều (Article) → Khoản (Clause) → Điểm (Point)
+Phần → Chương → Mục → Điều → Khoản → Điểm
 ```
 
 Pattern:
@@ -157,26 +155,26 @@ Output:
   "document_id": "doc_001",
   "article": "Điều 12",
   "clause": "Khoản 2",
-  "text": "Financial institutions must verify customer identity before opening an account.",
-  "parent_section": "Chương III - Customer Due Diligence"
+  "text": "Tổ chức tín dụng phải xác minh danh tính khách hàng trước khi mở tài khoản.",
+  "parent_section": "Chương III - Nhận biết khách hàng"
 }
 ```
 
-Key principle: all downstream outputs must trace back to a specific **Điều/Khoản/Điểm** (Article/Clause/Point), not just "chunk 14".
+Điểm quan trọng: mọi output sau này đều phải trace ngược lại được **Điều/Khoản/Điểm** gốc, không chỉ "chunk 14".
 
 #### Step 3 — Obligation Extraction Agent
 
 ```json
 {
   "obligation_id": "obl_001",
-  "obligation": "Verify customer identity before opening an account.",
+  "obligation": "Xác minh danh tính khách hàng trước khi mở tài khoản.",
   "obligation_type": "KYC",
   "mandatory_level": "must",
-  "applicable_entity": "financial institution",
-  "deadline": "before account opening",
+  "applicable_entity": "tổ chức tín dụng",
+  "deadline": "trước khi mở tài khoản",
   "evidence": {
     "clause_id": "clause_001",
-    "source_text": "Financial institutions must verify customer identity before opening an account."
+    "source_text": "Tổ chức tín dụng phải xác minh danh tính khách hàng trước khi mở tài khoản."
   }
 }
 ```
@@ -194,14 +192,14 @@ Critical → legal exposure, penalty, urgent deadline
 {
   "obligation_id": "obl_001",
   "risk_level": "high",
-  "risk_reason": "Affects customer onboarding process, requires KYC verification before account creation.",
+  "risk_reason": "Ảnh hưởng đến quy trình mở tài khoản, yêu cầu xác minh KYC trước khi tạo account.",
   "risk_dimensions": ["regulatory_compliance", "customer_onboarding", "operational_process"]
 }
 ```
 
 #### Step 5 — Business Impact Agent
 
-Business process inventory (pre-built for hackathon, configurable for production):
+Business process inventory (pre-built cho hackathon, configurable cho production):
 
 ```json
 [
@@ -221,7 +219,7 @@ Output:
   "affected_processes": [
     {
       "process": "Customer Onboarding",
-      "impact": "Account creation must be blocked until identity verification is completed.",
+      "impact": "Phải chặn tạo tài khoản cho đến khi xác minh danh tính hoàn tất.",
       "affected_departments": ["Compliance", "Product", "Engineering"],
       "affected_systems": ["Mobile App", "Core Banking", "KYC Service"]
     }
@@ -236,17 +234,17 @@ Output:
   "obligation_id": "obl_001",
   "recommended_actions": [
     {
-      "action": "Update onboarding workflow to require KYC verification before account creation.",
+      "action": "Cập nhật workflow onboarding để yêu cầu KYC trước khi tạo tài khoản.",
       "owner": "Product + Engineering",
       "priority": "P0",
-      "deadline": "Before regulation effective date",
+      "deadline": "Trước ngày hiệu lực quy định",
       "evidence_clause_id": "clause_001"
     },
     {
-      "action": "Revise internal KYC policy to reflect the new requirement.",
+      "action": "Sửa đổi chính sách KYC nội bộ.",
       "owner": "Compliance",
       "priority": "P1",
-      "deadline": "Within 2 weeks",
+      "deadline": "Trong 2 tuần",
       "evidence_clause_id": "clause_001"
     }
   ]
@@ -272,10 +270,10 @@ Output:
 ```json
 {
   "change_type": "modified",
-  "old_requirement": "Verify identity for high-risk customers.",
-  "new_requirement": "Verify identity for all customers before account opening.",
+  "old_requirement": "Xác minh danh tính đối với khách hàng rủi ro cao.",
+  "new_requirement": "Xác minh danh tính đối với tất cả khách hàng trước khi mở tài khoản.",
   "impact_level": "high",
-  "reason": "Requirement scope expanded from high-risk customers to all customers."
+  "reason": "Phạm vi yêu cầu mở rộng từ khách hàng rủi ro cao sang tất cả khách hàng."
 }
 ```
 
@@ -285,7 +283,7 @@ Output:
 
 ### 2.5 Compliance Graph Visualization
 
-Minimal graph rendered with React Flow from PostgreSQL data:
+Graph tối thiểu render bằng React Flow từ PostgreSQL data:
 
 ```text
 Regulation
@@ -297,7 +295,7 @@ Regulation
 → Recommended Action
 ```
 
-No graph database required. Generate nodes/edges from relational data and render client-side.
+Không cần graph database. Generate nodes/edges từ relational data rồi render client-side.
 
 ---
 
@@ -328,7 +326,7 @@ Production scope (post-hackathon):
 
 ```text
 Frontend:
-- React + Vite (or Next.js)
+- React + Vite (hoặc Next.js)
 - TailwindCSS
 - React Flow (graph visualization)
 
@@ -393,9 +391,7 @@ Storage:
 
 ## 3. Production Architecture
 
-After the hackathon, the system extends into a **production-grade regulatory compliance platform**.
-
-Key difference: production must handle stable operations, risk control, auditability, versioning, and integration with enterprise workflows.
+Sau hackathon, hệ thống mở rộng thành **production-grade regulatory compliance platform**.
 
 ### 3.1 Production Architecture Diagram
 
@@ -481,7 +477,7 @@ Observability: OpenTelemetry + Prometheus + Grafana + Sentry
 
 ### 3.3 Business Process Inventory
 
-- **Hackathon**: Pre-built inventory for demo (banking domain).
+- **Hackathon**: Pre-built inventory cho demo (banking domain).
 - **Production**: Organizations configure their own process inventory, departments, systems, controls, and owners.
 
 ---
